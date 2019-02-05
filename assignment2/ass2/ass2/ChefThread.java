@@ -1,51 +1,45 @@
 package ass2;
 
-public class ChefThread extends Thread {
-	protected Ingredient unlimitedIngredient;
-	protected int sandwichesMade = 0;
+public class ChefThread extends Thread { // one chef thread
+	protected Ingredient Ingredient;
+	protected int Made = 0;
 	protected static AgentThread agent = new AgentThread();
 
 	public ChefThread(Ingredient unlimitedIngredient) {
-		this.unlimitedIngredient = unlimitedIngredient;
-
+		this.Ingredient = unlimitedIngredient;
 	}
 
 	/**
-	 * Make sandwiches when possible :D
+	 * Make sandwiches at right condition with one chef
 	 */
 	public void run() {
-		while (agent.finishedMakingSandwiches() == false) {
+		while (agent.finishedMakingSandwiches() == false) {// 20 sandwich are done
 			synchronized (agent) {
 				try {
-					// Wait until there are ingredients on the table or we are
-					// done making sandwiches
-					while (agent.ingredientsAreOnTable == false && agent.finishedMakingSandwiches() == false) {
-						agent.wait();
+					while (agent.ingredientsAreOnTable == false) {
+						agent.wait(); // until ingredient is on table
 					}
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 				}
-				// Check if all sandwiches are done
-				if (agent.finishedMakingSandwiches() == false && agent.ingredientsAreOnTable == true) {
+				if (agent.ingredientsAreOnTable == true) {
 					// Check if they are the ingredients we need
 					boolean canMakeSandwich = true;
-					for (Ingredient i : agent.ingredientsOnTable) {
-						if (i == this.unlimitedIngredient) {
-							canMakeSandwich = false;
-						}
+					if (agent.ingredientsOnTable[0] == this.Ingredient
+							|| agent.ingredientsOnTable[1] == this.Ingredient) {
+						canMakeSandwich = false;
 					}
-					// Make a sandwich
-					if (canMakeSandwich) {
+					// Make a sandwich with the chef we needs
+					else if (canMakeSandwich) {
 						agent.sandwichesMade++;
 						agent.ingredientsAreOnTable = false;
-						sandwichesMade++;
+						Made++;
 					}
 				}
-				// Notify other threads that we are releasing the lock
-				agent.notifyAll();
+				agent.notifyAll(); // release lock
 			}
 		}
+		System.out.printf("The %s chef made %d sandwiches.%n", Ingredient, Made);
 		// Output the total count of sandwiches we made
-		System.out.printf("The %s chef made %d sandwiches.%n", unlimitedIngredient, sandwichesMade);
 	}
 }

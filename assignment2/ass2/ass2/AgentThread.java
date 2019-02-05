@@ -6,17 +6,16 @@ import java.util.Random;
  * Xinyu Chen 101031031
  */
 public class AgentThread extends Thread {
-	
+
 	protected Ingredient[] ingredientsOnTable = new Ingredient[2];
 	protected int sandwichesMade = 0;
-	protected int maxSandwiches = 20;
 	protected static Ingredient[] allIngredients = Ingredient.values();
 	protected boolean ingredientsAreOnTable = false;
 
 	public static void main(String[] args) {
-		// Start and store the agent thread	
-		AgentThread a= new AgentThread();
-		a=ChefThread.agent;
+		// Start the agent thread
+		AgentThread a = new AgentThread();
+		a = ChefThread.agent;
 		a.start();
 
 		// Start the chefs (one for each ingredient)
@@ -30,12 +29,12 @@ public class AgentThread extends Thread {
 		while (!finishedMakingSandwiches()) {
 			putIngredientsOnTable();
 		}
-
-		// Print out the total number of sandwiches that were made
-		System.out.printf("A total of 20 sandwiches have been made.\n");
 	}
-
+/**
+ * agent thread to generate 2 ingredients and notify others chef thread
+ */
 	public synchronized void putIngredientsOnTable() {
+		
 		Ingredient[] ingredients = new Ingredient[2];
 		Random rnd = new Random(); // generate a random number
 		// Pick a random ingredient
@@ -44,33 +43,30 @@ public class AgentThread extends Thread {
 		ingredients[1] = allIngredients[rnd.nextInt(3)];
 		while (ingredients[0] == ingredients[1]) {
 			ingredients[1] = allIngredients[rnd.nextInt(3)];
-		} 
+		}
 		// Get the lock and put them on the table
-		while (this.ingredientsAreOnTable==true) { //if is making sandwich
+		while (this.ingredientsAreOnTable == true) { // if is making sandwich
 			try {
-					wait();
-				}		
-		    catch (InterruptedException e) {
+				wait();
+			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
 		}
-			// Put the new ingredients on the table
-			ingredientsOnTable[0] = ingredients[0];
-			ingredientsOnTable[1] = ingredients[1];
-			this.ingredientsAreOnTable=true;
-			// Notify that we are releasing the lock
-			notifyAll();		
+		// Put the new ingredients on the table
+		ingredientsOnTable[0] = ingredients[0];
+		ingredientsOnTable[1] = ingredients[1];
+		this.ingredientsAreOnTable = true;
+		// Notify that we are releasing the lock
+		notifyAll();
 	}
 
-	
 	/**
-	 * Check if the limit for the number of sandwiches we can make has been
-	 * reached
+	 * Check if the limit for the number of sandwiches we can make has been reached
 	 * 
 	 * @return true if we have reached (or passed) maxSandwiches
 	 */
 	public boolean finishedMakingSandwiches() {
-		return (sandwichesMade >= maxSandwiches);
+		return (sandwichesMade >= 20);
 	}
 
 }
