@@ -29,6 +29,7 @@ public class AgentThread extends Thread {
 		while (!finishedMakingSandwiches()) {
 			putIngredientsOnTable();
 		}
+		System.out.println("total made 20 sandwiches");
 	}
 /**
  * agent thread to generate 2 ingredients and notify others chef thread
