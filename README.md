@@ -1,5 +1,8 @@
 # sysc3303-Assignment2
 
+Xinyu Chen
+101031031
+
 There are three java files in the folder.
 
 ingredient.java includes the enum for three ingredient.
