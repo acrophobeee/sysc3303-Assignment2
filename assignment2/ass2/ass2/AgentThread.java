@@ -61,9 +61,7 @@ public class AgentThread extends Thread {
 	}
 
 	/**
-	 * Check if the limit for the number of sandwiches we can make has been reached
-	 * 
-	 * @return true if we have reached (or passed) maxSandwiches
+	 * Check if the already made 20 sandwiches
 	 */
 	public boolean finishedMakingSandwiches() {
 		return (sandwichesMade >= 20);
